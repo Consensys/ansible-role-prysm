@@ -1,39 +1,36 @@
 ---
-- name: Add basics to the beacon cmdline_args
+- name: Add basics to the validator cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
       --{{prysm_network}}
-      --datadir={{prysm_data_dir}}
+      --datadir={{prysm_validator_data_dir}}
+      --wallet-dir={{ prysm_wallet_dir }}
       --verbosity={{prysm_log_level}}
-      --log-file={{prysm_log_dir}}/beacon.log
+      --log-file={{prysm_log_dir}}/validator.log
       --log-format=json
       --jwt-secret={{prysm_jwt_auth_file}}
       --execution-endpoint={{prysm_execution_urls}}
+      --enable-builder
+      --validator-rpc-provider='{{prysm_validator_validator_interface}}:{{prysm_rpc_port}}'
+      --validator-rest-api-provider='{{prysm_validator_validator_interface}}:{{prysm_grpc_port}}'
+      --validator-rpc-gateway-provider='{{prysm_validator_validator_interface}}:{{prysm_grpc_port}}'
       --accept-terms-of-use
-
-- name: Add p2p settings to the beacon cmdline_args
+      --enable-doppelganger
+      --enable-external-slasher-protection
+    
+- name: Add metrics to the validator cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
-      --p2p-tcp-port={{prysm_p2p_port}}
-      --p2p-udp-port={{prysm_p2p_port}}
-      --p2p-host-ip='{{prysm_host_ip}}'
-      --p2p-local-ip='{{prysm_host_ip}}'
-  when: prysm_p2p_enabled|bool == True
-
-- name: Add metrics to the beacon cmdline_args
-  set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
       --monitoring-host='{{ prysm_metrics_interface}}'
-      --monitoring-port={{ prysm_metrics_port}}
+      --monitoring-port={{ prysm_validator_metrics_port}}
   when: prysm_metrics_enabled|bool == True
 
-- name: Add RPC to the beacon cmdline_args
+- name: Add RPC to the validator cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
       --rpc-host='{{prysm_rpc_interface}}'
       --rpc-port={{prysm_rpc_port}}
       --grpc-gateway-corsdomain={{prysm_rpc_cors}}
@@ -42,10 +39,60 @@
       --http-modules={{ prysm_http_modules }}
   when: prysm_rpc_enabled|bool == True
 
-- name: Sanitize beacon cmdline_args
+- name: Add fee receipt to the validator cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: "{{prysm_beacon_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
+      --suggested-fee-recipient={{prysm_default_fee_recipient}}
+  when: prysm_default_fee_recipient != ""
 
-- name: Show beacon cmdline_args
+- name: Add fee receipt to the validator cmdline_args
+  set_fact:
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
+      --checkpoint-sync-url={{ prysm_checkpoint_sync_url }}
+      --genesis-validator-api-url={{ prysm_checkpoint_sync_url }}
+  when: prysm_checkpoint_sync_url != ""
+
+- name: Add custom cli args if provided
+  set_fact:
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
+      {{ prysm_validator_custom_cmdline_args }}
+  when: prysm_validator_custom_cmdline_args != ""
+
+- name: Sanitize validator cmdline_args
+  set_fact:
+    prysm_validator_cmdline_args: "{{prysm_validator_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+
+- name: Show validator cmdline_args
   debug:
-    msg: "{{prysm_beacon_cmdline_args}}"
+    msg: "{{prysm_validator_cmdline_args}}"
+
+- name: Create prysm-validator systemd service
+  template:
+    src: "prysm-validator.service.j2"
+    dest: "{{ prysm_systemd_dir }}/prysm-validator.service"
+    owner: "root"
+    group: "root"
+  become: true
+  register: validator_systemd_file
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    prysm_state_updates_validator: "{{ prysm_state_updates_validator + ['prysm.validator_systemd_file'] }}"
+  when: validator_systemd_file is changed
+
+- name: Reload systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: validator_systemd_file is changed
+
+- name: Enable and start prysm-validator service
+  systemd:
+    name: prysm-validator
+    state: "{{ prysm_systemd_state }}"
+    enabled: true
+  become: true
+  when: prysm_state_updates_validator|length > 0 

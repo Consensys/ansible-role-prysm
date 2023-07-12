@@ -1,7 +1,7 @@
-# Ansible Role: Teku
+# Ansible Role: Prysm
 
 ### Description
-Ansible role that will install, configure and runs [Teku](https://github.com/PegaSysEng/teku): an enterprise Java Ethereum 2 Client
+Ansible role that will install, configure and runs [prysm](https://github.com/prysmaticlabs/prysm): an enterprise Ethereum 2 Client
 
 ### Table of Contents
   - [Supported Platforms](#supported-platforms)
@@ -20,122 +20,51 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 * Amazon
 ```
 
-### Dependencies
-
-* JDK 11 or greater
-
 ### Role Variables:
 
-All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://docs.teku.consensys.net/en/latest) for more information
-
-| Name                                       | Default Value                                                                                                                | Description                                                                                                                                                 |
-|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `prysm_version`                             | ___unset___                                                                                                                  | __REQUIRED__ Version of teku to install and run. All available versions are listed on our teku [releases](https://github.com/PegaSysEng/teku/releases) page |
-| `prysm_user`                                | teku                                                                                                                         | teku user                                                                                                                                                   |
-| `prysm_group`                               | teku                                                                                                                         | teku group                                                                                                                                                  |
-| `prysm_download_url`                        | https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ prysm_version }}/teku-{{ prysm_version }}.tar.gz | The download tar.gz file used. You can use this if you need to retrieve teku from a custom location such as an internal repository.                         |
-| `prysm_install_dir`                         | /opt/teku                                                                                                                    | Path to install to                                                                                                                                          |
-| `prysm_config_dir`                          | /etc/teku                                                                                                                    | Path for default configuration                                                                                                                              |
-| `prysm_data_dir`                            | /opt/teku/data                                                                                                               | Path for data directory                                                                                                                                     |
-| `prysm_log_dir`                             | /var/log/teku                                                                                                                | Path for logs directory                                                                                                                                     |
-| `prysm_log_filename`                        | {{ `prysm_log_dir` }}/teku.log                                                                                                | Path containing the location (relative or absolute) and the log filename                                                                                    | 
-| `prysm_profile_file`                        | /etc/profile.d/teku-path.sh                                                                                                  | Path to allow loading teku into the system PATH                                                                                                             |
-| `prysm_managed_service`                     | true                                                                                                                         | Enables a systemd service (or launchd if on Darwin)                                                                                                         |
-| `prysm_launchd_dir`                         | /Library/LaunchAgents                                                                                                        | The default launchd directory                                                                                                                               |
-| `prysm_systemd_dir`                         | /etc/systemd/system/                                                                                                         | The default systemd directory                                                                                                                               |
-| `prysm_systemd_state`                       | restarted                                                                                                                    | The default option for the systemd service state                                                                                                            |
-| `prysm_output_transition_dir`               | /tmp/teku                                                                                                                    |                                                                                                                                                             |
-| `prysm_node_private_key_file`               | ""                                                                                                                           |                                                                                                                                                             |
-| `prysm_network`                             | minimal                                                                                                                      | Predefined network configuration                                                                                                                            |
-| `prysm_default_ip`                          | "127.0.0.1"                                                                                                                  |                                                                                                                                                             |
-| `prysm_host_ip`                             | ""                                                                                                                           |                                                                                                                                                             |
-| `prysm_p2p_enabled`                         | True                                                                                                                         | Enables or disables all P2P communication                                                                                                                   |
-| `prysm_p2p_interface`                       | 0.0.0.0                                                                                                                      | Specifies the network interface on which the node listens for P2P communication                                                                             |
-| `prysm_p2p_port`                            | 9000                                                                                                                         | Specifies the P2P listening ports (UDP and TCP)                                                                                                             |
-| `prysm_p2p_advertised_port`                 | 9000                                                                                                                         | The advertised P2P port                                                                                                                                     |
-| `prysm_p2p_discovery_enabled`               | True                                                                                                                         | Enables or disables P2P peer discovery                                                                                                                      |
-| `prysm_interop_genesis_time`                | 0                                                                                                                            |                                                                                                                                                             |
-| `prysm_interop_start_state`                 | ""                                                                                                                           |                                                                                                                                                             |
-| `prysm_interop_owned_validator_start_index` | 0                                                                                                                            |                                                                                                                                                             |
-| `prysm_interop_owned_validator_count`       | 64                                                                                                                           |                                                                                                                                                             |
-| `prysm_interop_number_of_validators`        | 64                                                                                                                           |                                                                                                                                                             |
-| `prysm_interop_enabled`                     | False                                                                                                                        |                                                                                                                                                             |
-| `prysm_validators_key_file`                 | ""                                                                                                                           | Path to the YAML formatted file to load unencrypted validator keys from                                                                                     |
-| `prysm_deposit_mode`                        | normal                                                                                                                       |                                                                                                                                                             |
-| `prysm_deposit_input_file`                  | ""                                                                                                                           |                                                                                                                                                             |
-| `prysm_deposit_number_validators`           | 64                                                                                                                           |                                                                                                                                                             |
-| `prysm_deposit_contract_address`            | 0x                                                                                                                           | Eth1 address of deposit contract                                                                                                                            |
-| `prysm_deposit_eth1_endpoint`               | ""                                                                                                                           | JSON-RPC URL of Eth1 node                                                                                                                                   |
-| `prysm_metrics_enabled`                     | True                                                                                                                         | Set to true to enable the metrics exporter                                                                                                                  |
-| `prysm_metrics_interface`                   | 0.0.0.0                                                                                                                      |                                                                                                                                                             |
-| `prysm_metrics_port`                        | 8008                                                                                                                         | Metric port when deployed as monolith                                                                                                                       |
-| `prysm_beacon_metrics_port`                 | 8008                                                                                                                         | Beacon service metric port when deployed as standalone                                                                                                      |
-| `prysm_validator_metrics_port`              | 8009                                                                                                                         | Validator service metric port when deployed as standalone                                                                                                   |
-| `prysm_metrics_categories`                  | [] (All categories enabled)                                                                                                  | Categories for which to track metrics                                                                                                                       |
-| `prysm_data_path`                           | /data                                                                                                                        | Use same folder for both validator and beacon service in standalone mode                                                                                    |
-| `prysm_data_storage_mode`                   | prune                                                                                                                        | Set the strategy for handling historical chain data                                                                                                         |
-| `prysm_beacon_rest_api_port`                | 5051                                                                                                                         |                                                                                                                                                             |
-| `prysm_beacon_rest_api_docs_enabled`        | False                                                                                                                        |                                                                                                                                                             |
-| `prysm_beacon_rest_api_enabled`             | True                                                                                                                         | Enable the REST API service                                                                                                                                 |
-| `prysm_beacon_rest_api_interface`           | 127.0.0.1                                                                                                                    | Interface for the REST API service                                                                                                                          |
-| `prysm_beacon_rest_api_host_allowlist`      | ["*"]                                                                                                                        | Host allowlist for for the REST API service                                                                                                                 |
-| `prysm_cmdline_args`                        | []                                                                                                                           |                                                                                                                                                             |
-| `prysm_cmdline_args_beacon`                 | prysm_cmdline_args                                                                                                            | Only applicable in standalone mode. Allows setting beacon specific values                                                                                   |
-| `prysm_cmdline_args_validator`              | prysm_cmdline_args                                                                                                            | Only applicable in standalone mode. Allows setting validator specific values                                                                                |
-| `prysm_env_opts`                            | []                                                                                                                           |                                                                                                                                                             |
-| `prysm_env_opts_beacon`                     | `prysm_env_opts`                                                                                                              | Only applicable in standalone mode. Allows setting beacon specific values                                                                                   |
-| `prysm_env_opts_validator`                  | `prysm_env_opts`                                                                                                              | Only applicable in standalone mode. Allows setting validator specific values                                                                                |
-| `prysm_standalone_validator`                | False                                                                                                                        | Run validator in standalone mode                                                                                                                            |
-| `prysm_beacon_enabled`                      | True                                                                                                                         | Whether to deploy the beacon node                                                                                                                           |
+All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the prysm [docs](https://docs.prylabs.network/docs/prysm-usage/parameters) for more information
 
 
-List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
-
-| Name                                              | Configuration File Parameter                 | Description                                                                                 |
-|---------------------------------------------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
-| `prysm_data_beacon_path`                           | `data-beacon-path`                           | Path to beacon data                                                                         |
-| `prysm_data_storage_archive_frequency`             | `data-storage-archive-frequency`             | Sets the frequency, in slots, at which to store finalized states to disk                    |
-| `prysm_data_validator_path`                        | `data-validator-path`                        | Path to validator client data                                                               |
-| `prysm_ee_endpoint`                                | `ee-endpoint`                                | The execution engine endpoint URL                                                           |
-| `prysm_ee_jwt_secret_file`                         | `ee-jwt-secret-file`                         | File to read the execution engine JWT authentication secret from                            |
-| `prysm_log_level`                                  | `logging`                                    | Logging verbosity levels: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL                  |
-| `prysm_log_validator_duties`                       | `log-include-validator-duties-enabled`       | Whether events are logged when validators perform duties                                    |
-| `prysm_p2p_discovery_bootnodes`                    | `p2p-discovery-bootnodes`                    | List of ENRs of the bootnodes ex: ['enr:-enr-string','enr:-enr-string']                     |
-| `prysm_p2p_peer_lower_bound`                       | `p2p-peer-lower-bound`                       | Lower bound on the target number of peers                                                   |
-| `prysm_p2p_peer_upper_bound`                       | `p2p-peer-upper-bound`                       | Upper bound on the target number of peers                                                   |
-| `prysm_p2p_static_peers`                           | `p2p-static-peers`                           | Static peers. ex: ['peer1-address','peer2-address']                                         |
-| `prysm_p2p_subscribe_all_subnets_enabled`          | `p2p-subscribe-all-subnets-enabled`          | True/False                                                                                  |
-| `prysm_validators_external_signer_public_keys`     | `validators-external-signer-public-keys`     | The list of external signer public keys ex: ['key1','key2']                                 |
-| `prysm_validators_external_signer_timeout`         | `validators-external-signer-timeout`         | Timeout (in milliseconds) for the external signing  service                                 |
-| `prysm_validators_external_signer_url`             | `validators-external-signer-url`             | URL for the external signing service                                                        |
-| `prysm_validators_proposer_default_fee_recipient`  | `validators-proposer-default-fee-recipient`  | Default fee recipient to use when proposing post-merge blocks                               |
-| `prysm_validators_proposer_config`                 | `validators-proposer-config`                 | Remote URL or local file path to load proposer configuration from                           |
-| `prysm_validators_proposer_config_refresh_enabled` | `validators-proposer-config-refresh-enabled` | Whether to periodically refresh the proposer config                                         |
-| `prysm_validators_graffiti`                        | `validators-graffiti`                        | Graffiti to include during block creation (gets converted to bytes and padded to Bytes32)   |
-| `prysm_validators_keystore_locking_enabled`        | `validators-keystore-locking-enabled`        | Enable locking validator keystore files (Valid values True, False)                          |
-| `prysm_validators_performance_tracking_enabled`    | `validators-performance-tracking-enabled`    | Enable validator performance tracking and logging (Valid values True, False)                |
-| `prysm_validators_early_attestations_enabled`      | `validators-early-attestations-enabled`      | Enable early attestation production (Valid values True, False)                              |
-| `prysm_ws_checkpoint`                              | `ws-checkpoint`                              | A recent checkpoint within the weak subjectivity period. Format <BLOCK_ROOT>:<EPOCH_NUMBER> |
-| `prysm_beacon_node_api_endpoints`                  | `beacon-node-api-endpoints`                  | Array. The beacon node API endpoints the validator client should connect to.                |
+| Name                           | Default Value                      |  Description                                                                                                        |
+|--------------------------------|------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `prysm_version`             | ___unset___                        | __REQUIRED__ Version of prysm to install and run.                                                            |
+| `prysm_user`                | prysm                         | prysm user                                                                                                   |
+| `prysm_group`               | prysm                         | prysm group                                                                                                  |
+| `prysm_base_dir`            | /opt/prysm                    | Path to install to                                                                                           |
+| `prysm_config_dir`          | /etc/prysm                    | Path for default configuration                                                                               |
+| `prysm_data_dir`            | /opt/prysm/data               | Path for data directory                                                                                      |
+| `prysm_validator_data_dir`  | /opt/prysm/validatorData      | Path for validaror data directory                                                                            |
+| `prysm_log_dir`             | /var/log/prysm                | Path for logs directory                                                                                      |
+| `prysm_log_level`           | "info"                        | Log level                                                                                               |
+| `prysm_network`             | mainnet                       | Predefined network configuration                                                                                    |
+| `prysm_jwt_auth_file`       | "/etc/jwt-secret.hex"         | Path of the JWT file                                                                                                |
+| `prysm_execution_urls`                 | "http://127.0.0.1:8551" | The elc execution url                                                                                               |
+| `prysm_validator_beacon_interface`     | "http://127.0.01"       | The beacon endpoint for the validator to use                                                                |
+| `prysm_checkpoint_sync_url`            | "https://beaconstate-{{prysm_network}}.chainsafe.io" | Checkpoint sync to speed things up                                          |
+| `prysm_default_fee_recipient`          | ""                      | The default fee recepient address                                                                         |
+| `prysm_keystores_dir`  | "/config/keys"                          |  The keys directory for validators                                                                        |
+| `prysm_beacon_enabled`    | True                                 |  Default run the beacon node                                                                              |
+| `prysm_validator_enabled` | False                                | Whether to run in validator mode - please note that the secrets and keys need to be copied by you         |
 
 
-### Standalone Mode
+prysm_beacon_custom_cmdline_args: ""
+prysm_validator_custom_cmdline_args: ""
 
-It is possible to configure Teku to run in either monolith mode (both beacon and validator run in same process) or standalone mode(beacon and validator run in its own process).
-Standalone mode runs beacon service its own process and validator service in its own process. Systemd service name `teku` is used for beacon service
-and `teku-validator` is used for validator service when run in standalone mode. Ansible role defaults to run Teku in monolith mode and behaviour can be controlled with the
-variable `prysm_standalone_validator=False/True`.
+prysm_beacon_enabled: True
+prysm_validator_enabled: False
+### Keys/Secrets
+Please note that you must put your own secrets and keys in the config directory that you are using ie `prysm_config_dir`
 
 ### Example Playbook
 
 1. Default setup:
 Install the role from galaxy
 ```
-ansible-galaxy install pegasyseng.teku
+ansible-galaxy install consensys.prysm
 ```
 
 Create a requirements.yml with the following:
-Replace `x.y.z` below with the version you would like to use from the teku [releases](https://github.com/PegaSysEng/teku/releases) page
+Replace `x.y.z` below with the version you would like to use from the prysm [releases](https://github.com/prysmaticlabs/prysm/releases) page
 ```
 ---
 - hosts: localhost
@@ -143,9 +72,9 @@ Replace `x.y.z` below with the version you would like to use from the teku [rele
   force_handlers: True
 
   roles:
-  - role: pegasyseng.teku
+  - role: consensys.prysm
     vars:
-      prysm_version: x.y.z
+      prysm_version: vx.y.z
 
 ```
 
@@ -158,11 +87,11 @@ ansible-playbook -v /path/to/requirements.yml
 2. Install via github
 
 ```
-ansible-galaxy install git+https://github.com/pegasyseng/ansible-role-teku.git
+ansible-galaxy install git+https://github.com/consensys/ansible-role-prysm.git
 ```
 
 Create a requirements.yml with the following:
-Replace `x.y.z` below with the version you would like to use from the teku [releases](https://github.com/PegaSysEng/teku/releases) page
+Replace `x.y.z` below with the version you would like to use from the prysm [releases](https://github.com/prysmaticlabs/prysm/releases) page
 ```
 ---
 - hosts: localhost
@@ -170,9 +99,9 @@ Replace `x.y.z` below with the version you would like to use from the teku [rele
   force_handlers: True
 
   roles:
-  - role: ansible-role-teku
+  - role: ansible-role-prysm
     vars:
-      prysm_version: x.y.z
+      prysm_version: vx.y.z
 
 ```
 

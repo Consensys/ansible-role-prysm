@@ -8,28 +8,33 @@ prysm_download_beacon_url: "https://github.com/prysmaticlabs/prysm/releases/down
 prysm_download_validator_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ prysm_version }}/validator-{{ prysm_version }}-linux-{{prysm_architecture}}"
 
 # Directory paths
-prysm_base_dir: "/opt/prysm/"
+prysm_base_dir: "/opt/prysm"
 prysm_install_dir: "{{ prysm_base_dir }}/prysm-{{ prysm_version }}"
 prysm_current_dir: "{{ prysm_base_dir }}/current"
 prysm_data_dir: "{{ prysm_base_dir }}/data"
-prysm_data_beacon_dir: "{{ prysm_data_dir }}/dir"
+prysm_validator_data_dir: "{{ prysm_base_dir }}/validatorData"
 prysm_config_dir: "/etc/prysm"
 prysm_log_dir: "/var/log/prysm"
 prysm_jwt_auth_file: "/etc/jwt-secret.hex"
-
+prysm_keys_dir: "{{prysm_config_dir}}/keys"
+prysm_wallet_dir: "{{prysm_config_dir}}/wallet"
+prysm_wallet_password_file: ""
 
 prysm_beacon_enabled: True
 prysm_validator_enabled: False
 prysm_beacon_cmdline_args: ""
 prysm_validator_cmdline_args: ""
-prysm_validator_beaconnodes: "http://prysm-beacon:9596"
-
+prysm_beacon_custom_cmdline_args: ""
+prysm_validator_custom_cmdline_args: ""
+prysm_validator_beacon_interface: "http://127.0.0.1"
 
 # Managed service config
-prysm_managed_service: true
 prysm_systemd_state: restarted
 prysm_systemd_template: prysm.service.j2
 prysm_systemd_dir: /etc/systemd/system
+prysm_state_updates: []
+prysm_state_updates_validator: []
+prysm_state_updates_beacon: []
 
 # prysm config
 prysm_network: mainnet
@@ -48,6 +53,7 @@ prysm_p2p_port: 9000
 prysm_metrics_enabled: "True"
 prysm_metrics_interface: 0.0.0.0
 prysm_metrics_port: 8008
+prysm_validator_metrics_port: 8009
 prysm_pprof_port: 6006
 
 # rpc
@@ -57,92 +63,3 @@ prysm_rpc_port: 4000
 prysm_grpc_port: 5051
 prysm_rpc_cors: "*"
 prysm_http_modules: "prysm,eth"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#interop
-prysm_interop_genesis_time: 0
-prysm_interop_owned_validator_start_index: 0
-prysm_interop_owned_validator_count: 64
-prysm_interop_number_of_validators: 64
-prysm_interop_enabled: "False"
-#validators
-prysm_validators_key_file: ""
-#deposit
-prysm_deposit_mode: "normal"
-prysm_deposit_input_file: "" #"validator_test_data.json"
-prysm_deposit_number_validators: 64
-prysm_deposit_contract_address: "0x"
-prysm_deposit_eth1_endpoint: ""
-
-prysm_metrics_enabled: "True"
-prysm_metrics_interface: 0.0.0.0
-prysm_metrics_host_allowlist: ["*"]
-prysm_metrics_port: 8008
-prysm_metrics_categories: []
-
-
-prysm_data_storage_mode: "prune"
-
-prysm_beacon_rest_api_port: 5051
-prysm_beacon_rest_api_docs_enabled: "False"
-prysm_beacon_rest_api_enabled: "True"
-prysm_beacon_rest_api_interface: "127.0.0.1"
-prysm_beacon_rest_api_host_allowlist: ["*"]
-
-prysm_cmdline_args: ""
-# Using an internal variable for setting the configuration. This avoids circular reference.
-prysm_cmdline_args_internal: "{{ prysm_cmdline_args }}"
-prysm_cmdline_args_beacon: "{{ prysm_cmdline_args }}"
-prysm_cmdline_args_validator: "{{ prysm_cmdline_args }}"
-prysm_env_opts: ""
-# Using an internal variable for setting the configuration. This avoids circular reference.
-prysm_env_opts_internal: "{{ prysm_env_opts }}"
-prysm_env_opts_beacon: "{{ prysm_env_opts }}"
-prysm_env_opts_validator: "{{ prysm_env_opts }}"
-
-prysm_validator_key_files: []
-prysm_validator_key_password_files: []
-
-# internal state to maintain idempotency
-prysm_state_updates: []
-prysm_state_updates_validator: []
-prysm_state_updates_beacon: []
-
-# Defaults for monolith service for backward compatibility
-prysm_sub_command: ''
-prysm_log_file: "{{ prysm_log_dir }}/prysm.log"
-prysm_config_file: "{{ prysm_config_dir }}/prysm.yml"
-
-
-
-# Configuration for monolith prysm client
-prysm_monolith_service_name: 'prysm'
-prysm_monolith_service_file: "{{ prysm_systemd_dir }}/prysm.service"
-prysm_monolith_log_file: "{{ prysm_log_dir }}/prysm.log"
-prysm_monolith_config_file: "{{ prysm_config_dir }}/prysm.yml"
-
-# Configuration for standalone validator client
-prysm_validator_service_name: 'prysm-validator'
-prysm_validator_service_file: "{{ prysm_systemd_dir }}/prysm-validator.service"
-prysm_validator_log_file: "{{ prysm_log_dir }}/prysm-validator.log"
-prysm_validator_config_file: "{{ prysm_config_dir }}/prysm-validator.yml"
-prysm_validator_metrics_port: '8009'
-
-# Configuration for standalone beacon client
-prysm_beacon_service_name: 'prysm'
-prysm_beacon_service_file: "{{ prysm_systemd_dir }}/prysm.service"
-prysm_beacon_log_file: "{{ prysm_log_dir }}/prysm.log"
-prysm_beacon_config_file: "{{ prysm_config_dir }}/prysm.yml"
-prysm_beacon_metrics_port: '8008'

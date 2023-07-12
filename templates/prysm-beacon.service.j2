@@ -1,0 +1,17 @@
+[Unit]
+Description=Prysm-beacon
+After=syslog.target network.target
+
+[Service]
+User={{ prysm_user }}
+Group={{ prysm_group }}
+Environment=HOME=/home/{{ prysm_user }}
+Type=simple
+ExecStart=/bin/sh -c "{{ prysm_current_dir }}/prysm-beacon {{ prysm_beacon_cmdline_args }} >> {{ prysm_log_dir }}/beacon.log 2>&1"
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+WorkingDirectory={{ prysm_current_dir }}
+
+[Install]
+WantedBy=multi-user.target

@@ -42,6 +42,28 @@
       --http-modules={{ prysm_http_modules }}
   when: prysm_rpc_enabled|bool == True
 
+- name: Add fee receipt to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --suggested-fee-recipient={{prysm_default_fee_recipient}}
+  when: prysm_default_fee_recipient != ""
+
+- name: Add fee receipt to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --checkpoint-sync-url={{ prysm_checkpoint_sync_url }}
+      --genesis-beacon-api-url={{ prysm_checkpoint_sync_url }}
+  when: prysm_checkpoint_sync_url != ""
+
+- name: Add custom cli args if provided
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      {{ prysm_beacon_custom_cmdline_args }}
+  when: prysm_beacon_custom_cmdline_args != ""
+
 - name: Sanitize beacon cmdline_args
   set_fact:
     prysm_beacon_cmdline_args: "{{prysm_beacon_cmdline_args | replace('\n', '') | replace('\"', '')}}"
@@ -49,3 +71,31 @@
 - name: Show beacon cmdline_args
   debug:
     msg: "{{prysm_beacon_cmdline_args}}"
+
+- name: Create prysm-beacon systemd service
+  template:
+    src: "prysm-beacon.service.j2"
+    dest: "{{ prysm_systemd_dir }}/prysm-beacon.service"
+    owner: "root"
+    group: "root"
+  become: true
+  register: beacon_systemd_file
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    prysm_state_updates_beacon: "{{ prysm_state_updates_beacon + ['prysm.beacon_systemd_file'] }}"
+  when: beacon_systemd_file is changed
+
+- name: Reload systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: beacon_systemd_file is changed
+
+- name: Enable and start prysm-beacon service
+  systemd:
+    name: prysm-beacon
+    state: "{{ prysm_systemd_state }}"
+    enabled: true
+  become: true
+  when: prysm_state_updates_beacon|length > 0 
