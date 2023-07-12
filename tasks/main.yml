@@ -1,0 +1,16 @@
+---
+- name: Ensure we have sane configuration
+  block:
+    - fail:
+        msg: You must set "prysm_version" for this role to run
+      when: prysm_version is not defined
+
+- name: Get IP address to bind to if not provided
+  include_tasks: "network.yml"
+  when: not prysm_host_ip
+  
+- name: Install prysm
+  include_tasks: "install.yml"
+
+# - name: Create prysm service
+#   include_tasks: "service.yml"

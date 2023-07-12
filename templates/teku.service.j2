@@ -1,0 +1,25 @@
+[Unit]
+Description=Teku
+After=syslog.target network.target
+
+[Service]
+User={{ prysm_user }}
+Group={{ prysm_group }}
+Environment=HOME=/home/{{ prysm_user }}
+Environment='prysm_OPTS={{ prysm_env_opts_internal|map('to_json')|join(' ') }}'
+{% if prysm_log4j_config_file %}
+Environment=LOG4J_CONFIGURATION_FILE={{ prysm_log4j_config_file }}
+{% endif %}
+Type=simple
+{% if prysm_cmdline_args_internal %}
+ExecStart=/bin/sh -c "{{ prysm_current_dir }}/bin/teku -c {{ prysm_config_file }} {{ prysm_sub_command }} {{prysm_cmdline_args_internal|map('to_json')|join(' ')|regex_replace('"','')}} >> {{ prysm_log_file }} 2>&1"
+{% else %}
+ExecStart=/bin/sh -c "{{ prysm_current_dir }}/bin/teku -c {{ prysm_config_file }} {{ prysm_sub_command }} >> {{ prysm_log_file }} 2>&1"
+{% endif %}
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+WorkingDirectory={{ prysm_current_dir }}
+
+[Install]
+WantedBy=multi-user.target

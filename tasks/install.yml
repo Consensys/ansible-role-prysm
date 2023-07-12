@@ -1,0 +1,66 @@
+---
+- name: Ensure prysm group exists
+  group:
+    name: "{{ prysm_group }}"
+    state: present
+  become: true
+
+- name: Create prysm user
+  user:
+    comment:  prysm client user
+    name: "{{ prysm_user }}"
+    group: "{{ prysm_group }}"
+  become: true
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prysm_user }}"
+    group: "{{ prysm_group }}"
+  loop:
+    - "{{ prysm_base_dir }}"
+    - "{{ prysm_install_dir }}"    
+    - "{{ prysm_config_dir }}"
+    - "{{ prysm_data_dir }}"
+    - "{{ prysm_log_dir }}"
+  become: true
+
+- name: Setup logrotate
+  template:
+    src: "logrotate/prysm"
+    dest: "/etc/logrotate.d/prysm"
+  become: true
+
+- name: Get prysm beacon-chain binary to install directory
+  ansible.builtin.get_url:
+    url: "{{ prysm_download_beacon_url }}"
+    dest: "{{ prysm_install_dir }}/prysm-beacon"
+    owner: "{{ prysm_user }}"
+    group: "{{ prysm_group }}"
+    mode: '0667'
+  become: true
+
+- name: Get prysm beacon-chain binary to install directory
+  ansible.builtin.get_url:
+    url: "{{ prysm_download_validator_url }}"
+    dest: "{{ prysm_install_dir }}/prysm-validator"
+    owner: "{{ prysm_user }}"
+    group: "{{ prysm_group }}"
+    mode: '0667'
+  become: true
+
+- name: Create a symlink to current
+  file:
+    src: "{{ prysm_install_dir }}/"
+    dest: "{{ prysm_current_dir }}"
+    state: link
+  register: create_symlink
+  become: true
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    prysm_state_updates: "{{ prysm_state_updates + ['prysm.install_dir'] }}"
+    prysm_state_updates_validator: "{{ prysm_state_updates_validator + ['prysm.install_dir'] }}"
+    prysm_state_updates_beacon: "{{ prysm_state_updates_beacon + ['prysm.install_dir'] }}"
+  when: "extract_src is changed or create_symlink is changed"
