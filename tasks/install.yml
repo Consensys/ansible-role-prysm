@@ -40,6 +40,7 @@
     group: "{{ prysm_group }}"
     mode: '0667'
   become: true
+  register: get_binary_beacon
 
 - name: Get prysm beacon-chain binary to install directory
   ansible.builtin.get_url:
@@ -49,6 +50,7 @@
     group: "{{ prysm_group }}"
     mode: '0667'
   become: true
+  register: get_binary_validator
 
 - name: Create a symlink to current
   file:
@@ -63,4 +65,7 @@
     prysm_state_updates: "{{ prysm_state_updates + ['prysm.install_dir'] }}"
     prysm_state_updates_validator: "{{ prysm_state_updates_validator + ['prysm.install_dir'] }}"
     prysm_state_updates_beacon: "{{ prysm_state_updates_beacon + ['prysm.install_dir'] }}"
-  when: "extract_src is changed or create_symlink is changed"
+  when: >
+    get_binary_beacon is changed or 
+    get_binary_validator is changed or 
+    create_symlink is changed

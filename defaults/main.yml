@@ -15,10 +15,12 @@ prysm_data_dir: "{{ prysm_base_dir }}/data"
 prysm_data_beacon_dir: "{{ prysm_data_dir }}/dir"
 prysm_config_dir: "/etc/prysm"
 prysm_log_dir: "/var/log/prysm"
-prysm_output_transition_dir: "/tmp/prysm"
-prysm_node_private_key_file: ""
-prysm_config_template: "prysm.yml.j2"
-besu_profile_file: "/etc/profile.d/prysm-path.sh"
+
+prysm_beacon_enabled: True
+prysm_validator_enabled: False
+
+
+
 
 # Logging
 prysm_log_level: INFO
@@ -70,7 +72,7 @@ prysm_metrics_host_allowlist: ["*"]
 prysm_metrics_port: 8008
 prysm_metrics_categories: []
 
-prysm_data_path: "/data"
+
 prysm_data_storage_mode: "prune"
 
 prysm_beacon_rest_api_port: 5051
@@ -103,9 +105,7 @@ prysm_sub_command: ''
 prysm_log_file: "{{ prysm_log_dir }}/prysm.log"
 prysm_config_file: "{{ prysm_config_dir }}/prysm.yml"
 
-# determine whether to run as standalone validator client. Default is not to run standalone validator
-prysm_beacon_enabled: True
-prysm_standalone_validator: "{{ not prysm_beacon_enabled | bool }}"
+
 
 # Configuration for monolith prysm client
 prysm_monolith_service_name: 'prysm'
