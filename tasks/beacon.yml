@@ -1,0 +1,51 @@
+---
+- name: Add basics to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --{{prysm_network}}
+      --datadir={{prysm_data_dir}}
+      --verbosity={{prysm_log_level}}
+      --log-file={{prysm_log_dir}}/beacon.log
+      --log-format=json
+      --jwt-secret={{prysm_jwt_auth_file}}
+      --execution-endpoint={{prysm_execution_urls}}
+      --accept-terms-of-use
+
+- name: Add p2p settings to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --p2p-tcp-port={{prysm_p2p_port}}
+      --p2p-udp-port={{prysm_p2p_port}}
+      --p2p-host-ip='{{prysm_host_ip}}'
+      --p2p-local-ip='{{prysm_host_ip}}'
+  when: prysm_p2p_enabled|bool == True
+
+- name: Add metrics to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --monitoring-host='{{ prysm_metrics_interface}}'
+      --monitoring-port={{ prysm_metrics_port}}
+  when: prysm_metrics_enabled|bool == True
+
+- name: Add RPC to the beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --rpc-host='{{prysm_rpc_interface}}'
+      --rpc-port={{prysm_rpc_port}}
+      --grpc-gateway-corsdomain={{prysm_rpc_cors}}
+      --grpc-gateway-host='{{prysm_rpc_interface}}'
+      --grpc-gateway-port={{prysm_grpc_port}}
+      --http-modules={{ prysm_http_modules }}
+  when: prysm_rpc_enabled|bool == True
+
+- name: Sanitize beacon cmdline_args
+  set_fact:
+    prysm_beacon_cmdline_args: "{{prysm_beacon_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+
+- name: Show beacon cmdline_args
+  debug:
+    msg: "{{prysm_beacon_cmdline_args}}"

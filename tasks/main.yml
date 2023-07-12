@@ -12,5 +12,13 @@
 - name: Install prysm
   include_tasks: "install.yml"
 
+- name: Start beacon
+  include_tasks: "beacon.yml"
+  when: prysm_beacon_enabled
+
+- name: Start validator
+  include_tasks: "validator.yml"
+  when: prysm_validator_enabled
+
 # - name: Create prysm service
 #   include_tasks: "service.yml"

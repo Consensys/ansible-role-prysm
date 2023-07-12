@@ -15,41 +15,61 @@ prysm_data_dir: "{{ prysm_base_dir }}/data"
 prysm_data_beacon_dir: "{{ prysm_data_dir }}/dir"
 prysm_config_dir: "/etc/prysm"
 prysm_log_dir: "/var/log/prysm"
+prysm_jwt_auth_file: "/etc/jwt-secret.hex"
+
 
 prysm_beacon_enabled: True
 prysm_validator_enabled: False
+prysm_beacon_cmdline_args: ""
+prysm_validator_cmdline_args: ""
+prysm_validator_beaconnodes: "http://prysm-beacon:9596"
 
-
-
-
-# Logging
-prysm_log_level: INFO
-prysm_log_color_enabled: False
-prysm_log_destination: 'DEFAULT_BOTH'
-prysm_log_filename: "{{ prysm_log_dir }}/prysm.log"
-prysm_log_filename_pattern: 'prysm_%d{yyyy-MM-dd}.log'
-prysm_log_include_events_enabled: False
 
 # Managed service config
 prysm_managed_service: true
 prysm_systemd_state: restarted
 prysm_systemd_template: prysm.service.j2
 prysm_systemd_dir: /etc/systemd/system
-prysm_launchd_template: tech.pegasyseng.prysm.plist.j2
-prysm_launchd_dir: /Library/LaunchAgents
 
 # prysm config
-prysm_network: minimal
-prysm_initial_state: ""
+prysm_network: mainnet
 prysm_host_ip: ""
 prysm_default_ip: "127.0.0.1"
+prysm_log_level: info
+prysm_execution_urls: "http://127.0.0.1:8551"
+prysm_checkpoint_sync_url: "https://beaconstate-{{prysm_network}}.chainsafe.io"
+prysm_default_fee_recipient: ""
 
-#node
+#p2p
 prysm_p2p_enabled: "True"
-prysm_p2p_interface: 0.0.0.0
 prysm_p2p_port: 9000
-prysm_p2p_advertised_port: 9000
-prysm_p2p_discovery_enabled: "True"
+
+#metrics
+prysm_metrics_enabled: "True"
+prysm_metrics_interface: 0.0.0.0
+prysm_metrics_port: 8008
+prysm_pprof_port: 6006
+
+# rpc
+prysm_rpc_enabled: "True"
+prysm_rpc_interface: "127.0.0.1"
+prysm_rpc_port: 4000
+prysm_grpc_port: 5051
+prysm_rpc_cors: "*"
+prysm_http_modules: "prysm,eth"
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #interop
 prysm_interop_genesis_time: 0
