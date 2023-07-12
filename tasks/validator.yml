@@ -46,7 +46,7 @@
       --suggested-fee-recipient={{prysm_default_fee_recipient}}
   when: prysm_default_fee_recipient != ""
 
-- name: Add fee receipt to the validator cmdline_args
+- name: Add checkpoint sync to the validator cmdline_args
   set_fact:
     prysm_validator_cmdline_args: >
       {{prysm_validator_cmdline_args}}

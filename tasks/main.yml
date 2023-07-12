@@ -19,6 +19,3 @@
 - name: Start validator
   include_tasks: "validator.yml"
   when: prysm_validator_enabled
-
-# - name: Create prysm service
-#   include_tasks: "service.yml"

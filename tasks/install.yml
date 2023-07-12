@@ -22,6 +22,8 @@
     - "{{ prysm_base_dir }}"
     - "{{ prysm_install_dir }}"    
     - "{{ prysm_config_dir }}"
+    - "{{ prysm_keys_dir }}"
+    - "{{ prysm_wallet_dir }}"
     - "{{ prysm_data_dir }}"
     - "{{ prysm_validator_data_dir }}"
     - "{{ prysm_log_dir }}"

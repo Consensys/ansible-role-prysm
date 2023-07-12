@@ -49,7 +49,7 @@
       --suggested-fee-recipient={{prysm_default_fee_recipient}}
   when: prysm_default_fee_recipient != ""
 
-- name: Add fee receipt to the beacon cmdline_args
+- name: Add checkpoint sync to the beacon cmdline_args
   set_fact:
     prysm_beacon_cmdline_args: >
       {{prysm_beacon_cmdline_args}}
