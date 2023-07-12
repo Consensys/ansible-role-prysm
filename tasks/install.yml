@@ -39,7 +39,7 @@
     dest: "{{ prysm_install_dir }}/prysm-beacon"
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    mode: '0667'
+    mode: '0777'
   become: true
   register: get_binary_beacon
 
@@ -49,7 +49,7 @@
     dest: "{{ prysm_install_dir }}/prysm-validator"
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    mode: '0667'
+    mode: '0777'
   become: true
   register: get_binary_validator
 
