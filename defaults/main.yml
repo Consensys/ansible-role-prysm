@@ -2,7 +2,7 @@
 # User and group
 prysm_user: prysm
 prysm_group: "{{ prysm_user }}"
-prysm_architecture: "amd64" 
+prysm_architecture: "amd64"
 # Version to install - linux only!
 prysm_download_beacon_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ prysm_version }}/beacon-chain-{{ prysm_version }}-linux-{{prysm_architecture}}"
 prysm_download_validator_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ prysm_version }}/validator-{{ prysm_version }}-linux-{{prysm_architecture}}"
@@ -37,6 +37,7 @@ prysm_state_updates_beacon: []
 
 # prysm config
 prysm_network: mainnet
+prysm_local_ip: "0.0.0.0"
 prysm_host_ip: ""
 prysm_default_ip: "127.0.0.1"
 prysm_log_level: info

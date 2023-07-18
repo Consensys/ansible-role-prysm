@@ -19,7 +19,7 @@
       --p2p-tcp-port={{prysm_p2p_port}}
       --p2p-udp-port={{prysm_p2p_port}}
       --p2p-host-ip='{{prysm_host_ip}}'
-      --p2p-local-ip='{{prysm_host_ip}}'
+      --p2p-local-ip='{{prysm_local_ip}}'
   when: prysm_p2p_enabled|bool == True
 
 - name: Add metrics to the beacon cmdline_args
@@ -98,4 +98,4 @@
     state: "{{ prysm_systemd_state }}"
     enabled: true
   become: true
-  when: prysm_state_updates_beacon|length > 0 
+  when: prysm_state_updates_beacon|length > 0
