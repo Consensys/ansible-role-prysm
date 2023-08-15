@@ -15,7 +15,6 @@
       --enable-builder
       --accept-terms-of-use
       --enable-doppelganger
-      --enable-external-slasher-protection
 
 - name: Add metrics to the validator cmdline_args
   set_fact:
