@@ -29,7 +29,7 @@
   set_fact:
     prysm_validator_cmdline_args: >
       {{prysm_validator_cmdline_args}}
-      --graffiti={{prysm_graffiti}}
+      --graffiti='{{prysm_graffiti}}'
   when: prysm_graffiti != ""
 
 - name: Add custom cli args if provided
