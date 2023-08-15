@@ -14,9 +14,6 @@
       --jwt-secret={{prysm_jwt_auth_file}}
       --execution-endpoint={{prysm_execution_urls}}
       --enable-builder
-      --validator-rpc-provider='{{prysm_validator_validator_interface}}:{{prysm_rpc_port}}'
-      --validator-rest-api-provider='{{prysm_validator_validator_interface}}:{{prysm_grpc_port}}'
-      --validator-rpc-gateway-provider='{{prysm_validator_validator_interface}}:{{prysm_grpc_port}}'
       --accept-terms-of-use
       --enable-doppelganger
       --enable-external-slasher-protection
