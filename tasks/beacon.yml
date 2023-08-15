@@ -57,6 +57,13 @@
       --genesis-beacon-api-url={{ prysm_checkpoint_sync_url }}
   when: prysm_checkpoint_sync_url != ""
 
+- name: Add genesis-state if defined
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --genesis-state={{prysm_genesis_state}}
+  when: prysm_genesis_state is defined and prysm_genesis_state != ""
+
 - name: Add custom cli args if provided
   set_fact:
     prysm_beacon_cmdline_args: >

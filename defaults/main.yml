@@ -26,7 +26,8 @@ prysm_beacon_cmdline_args: ""
 prysm_validator_cmdline_args: ""
 prysm_beacon_custom_cmdline_args: ""
 prysm_validator_custom_cmdline_args: ""
-prysm_validator_beacon_interface: "http://127.0.0.1"
+prysm_validator_beacon_interface: "http://127.0.0.1:4000"
+prysm_graffiti: ""
 
 # Managed service config
 prysm_systemd_state: restarted

@@ -6,6 +6,8 @@
       --{{prysm_network}}
       --datadir={{prysm_validator_data_dir}}
       --wallet-dir={{ prysm_wallet_dir }}
+      --wallet-password-file={{ prysm_wallet_password_file }}
+      --beacon-rpc-provider={{ prysm_validator_beacon_interface }}
       --verbosity={{prysm_log_level}}
       --log-file={{prysm_log_dir}}/validator.log
       --log-format=json
@@ -39,6 +41,13 @@
       --http-modules={{ prysm_http_modules }}
   when: prysm_rpc_enabled|bool == True
 
+- name: Add graffiti to the validator cmdline_args
+  set_fact:
+    prysm_validator_cmdline_args: >
+      {{prysm_validator_cmdline_args}}
+      --graffiti={{prysm_graffiti}}
+  when: prysm_graffiti != ""
+
 - name: Add fee receipt to the validator cmdline_args
   set_fact:
     prysm_validator_cmdline_args: >
@@ -53,6 +62,13 @@
       --checkpoint-sync-url={{ prysm_checkpoint_sync_url }}
       --genesis-validator-api-url={{ prysm_checkpoint_sync_url }}
   when: prysm_checkpoint_sync_url != ""
+
+- name: Add genesis-state if defined
+  set_fact:
+    prysm_beacon_cmdline_args: >
+      {{prysm_beacon_cmdline_args}}
+      --genesis-state={{prysm_genesis_state}}
+  when: prysm_genesis_state is defined and prysm_genesis_state != ""
 
 - name: Add custom cli args if provided
   set_fact:
