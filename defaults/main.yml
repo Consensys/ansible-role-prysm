@@ -61,6 +61,6 @@ prysm_pprof_port: 6006
 prysm_rpc_enabled: "True"
 prysm_rpc_interface: "127.0.0.1"
 prysm_rpc_port: 4000
-prysm_grpc_port: 5051
+prysm_grpc_port: 5052
 prysm_rpc_cors: "*"
 prysm_http_modules: "prysm,eth"
