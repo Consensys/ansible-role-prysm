@@ -40,7 +40,6 @@ prysm_state_updates_beacon: []
 prysm_network: mainnet
 prysm_local_ip: "0.0.0.0"
 prysm_host_ip: ""
-prysm_default_ip: "127.0.0.1"
 prysm_log_level: info
 prysm_execution_urls: "http://127.0.0.1:8551"
 prysm_checkpoint_sync_url: "https://beaconstate-{{prysm_network}}.chainsafe.io"
