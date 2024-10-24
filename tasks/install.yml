@@ -35,7 +35,7 @@
     dest: "/etc/logrotate.d/prysm"
   become: true
 
-- name: Get prysm beacon-chain binary to install directory
+- name: Get prysm beacon-chain binary to install directory [version={{ _prysm_version }}]
   ansible.builtin.get_url:
     url: "{{ prysm_download_beacon_url }}"
     dest: "{{ prysm_install_dir }}/prysm-beacon"
@@ -45,7 +45,7 @@
   become: true
   register: get_binary_beacon
 
-- name: Get prysm beacon-chain binary to install directory
+- name: Get prysm validator binary to install directory [version={{ _prysm_version }}]
   ansible.builtin.get_url:
     url: "{{ prysm_download_validator_url }}"
     dest: "{{ prysm_install_dir }}/prysm-validator"
