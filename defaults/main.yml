@@ -3,13 +3,18 @@
 prysm_user: prysm
 prysm_group: "{{ prysm_user }}"
 prysm_architecture: "amd64"
+
+# Internal variable for version. This can be overriden when it discover the latest version
+# Parameters specify via command line cannot be overriden using set_fact
+_prysm_version: "{{ prysm_version }}"
+
 # Version to install - linux only!
-prysm_download_beacon_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ prysm_version }}/beacon-chain-{{ prysm_version }}-linux-{{prysm_architecture}}"
-prysm_download_validator_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ prysm_version }}/validator-{{ prysm_version }}-linux-{{prysm_architecture}}"
+prysm_download_beacon_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ _prysm_version }}/beacon-chain-{{ _prysm_version }}-linux-{{prysm_architecture}}"
+prysm_download_validator_url: "https://github.com/prysmaticlabs/prysm/releases/download/{{ _prysm_version }}/validator-{{ _prysm_version }}-linux-{{prysm_architecture}}"
 
 # Directory paths
 prysm_base_dir: "/opt/prysm"
-prysm_install_dir: "{{ prysm_base_dir }}/prysm-{{ prysm_version }}"
+prysm_install_dir: "{{ prysm_base_dir }}/prysm-{{ _prysm_version }}"
 prysm_current_dir: "{{ prysm_base_dir }}/current"
 prysm_data_dir: "{{ prysm_base_dir }}/data"
 prysm_validator_data_dir: "{{ prysm_base_dir }}/validatorData"

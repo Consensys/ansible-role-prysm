@@ -27,7 +27,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 
 | Name                           | Default Value                      |  Description                                                                                                        |
 |--------------------------------|------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| `prysm_version`             | ___unset___                        | __REQUIRED__ Version of prysm to install and run.                                                            |
+| `prysm_version`             | ___unset___                        | __REQUIRED__ Version of prysm to install and run. Specify `latest` to discover the latest released version                                               |
 | `prysm_user`                | prysm                         | prysm user                                                                                                   |
 | `prysm_group`               | prysm                         | prysm group                                                                                                  |
 | `prysm_base_dir`            | /opt/prysm                    | Path to install to                                                                                           |
