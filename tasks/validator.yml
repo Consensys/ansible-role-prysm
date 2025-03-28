@@ -1,8 +1,8 @@
 ---
 - name: Add basics to the validator cmdline_args
   set_fact:
-    prysm_validator_cmdline_args: >
-      {{prysm_validator_cmdline_args}}
+    prysm_validator_internal_cmdline_args: >
+      {{prysm_validator_internal_cmdline_args}}
       --{{prysm_network}}
       --datadir={{prysm_validator_data_dir}}
       --wallet-dir={{ prysm_wallet_dir }}
@@ -18,33 +18,33 @@
 
 - name: Add metrics to the validator cmdline_args
   set_fact:
-    prysm_validator_cmdline_args: >
-      {{prysm_validator_cmdline_args}}
+    prysm_validator_internal_cmdline_args: >
+      {{prysm_validator_internal_cmdline_args}}
       --monitoring-host='{{ prysm_metrics_interface}}'
       --monitoring-port={{ prysm_validator_metrics_port}}
   when: prysm_metrics_enabled|bool == True
 
 - name: Add graffiti to the validator cmdline_args
   set_fact:
-    prysm_validator_cmdline_args: >
-      {{prysm_validator_cmdline_args}}
+    prysm_validator_internal_cmdline_args: >
+      {{prysm_validator_internal_cmdline_args}}
       --graffiti='{{prysm_graffiti}}'
   when: prysm_graffiti != ""
 
 - name: Add custom cli args if provided
   set_fact:
-    prysm_validator_cmdline_args: >
-      {{prysm_validator_cmdline_args}}
-      {{ prysm_validator_custom_cmdline_args }}
-  when: prysm_validator_custom_cmdline_args != ""
+    prysm_validator_internal_cmdline_args: >
+      {{prysm_validator_internal_cmdline_args}}
+      {{ prysm_validator_cmdline_args | join(' ') }}
+  when: prysm_validator_cmdline_args != []
 
 - name: Sanitize validator cmdline_args
   set_fact:
-    prysm_validator_cmdline_args: "{{prysm_validator_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+    prysm_validator_internal_cmdline_args: "{{prysm_validator_internal_cmdline_args | replace('\n', '') | replace('\"', '')}}"
 
 - name: Show validator cmdline_args
   debug:
-    msg: "{{prysm_validator_cmdline_args}}"
+    msg: "{{prysm_validator_internal_cmdline_args}}"
 
 - name: Create prysm-validator systemd service
   template:
