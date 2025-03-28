@@ -1,8 +1,8 @@
 ---
 - name: Add basics to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --{{prysm_network}}
       --datadir={{prysm_data_dir}}
       --verbosity={{prysm_log_level}}
@@ -14,8 +14,8 @@
 
 - name: Add p2p settings to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --p2p-tcp-port={{prysm_p2p_port}}
       --p2p-udp-port={{prysm_p2p_port}}
       --p2p-host-ip='{{prysm_host_ip}}'
@@ -24,16 +24,16 @@
 
 - name: Add metrics to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --monitoring-host='{{ prysm_metrics_interface}}'
       --monitoring-port={{ prysm_metrics_port}}
   when: prysm_metrics_enabled|bool == True
 
 - name: Add RPC to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --rpc-host='{{prysm_rpc_interface}}'
       --rpc-port={{prysm_rpc_port}}
       --grpc-gateway-corsdomain={{prysm_rpc_cors}}
@@ -44,40 +44,40 @@
 
 - name: Add fee receipt to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --suggested-fee-recipient={{prysm_default_fee_recipient}}
   when: prysm_default_fee_recipient != ""
 
 - name: Add checkpoint sync to the beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --checkpoint-sync-url={{ prysm_checkpoint_sync_url }}
       --genesis-beacon-api-url={{ prysm_checkpoint_sync_url }}
   when: prysm_checkpoint_sync_url != ""
 
 - name: Add genesis-state if defined
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
       --genesis-state={{prysm_genesis_state}}
   when: prysm_genesis_state is defined and prysm_genesis_state != ""
 
 - name: Add custom cli args if provided
   set_fact:
-    prysm_beacon_cmdline_args: >
-      {{prysm_beacon_cmdline_args}}
-      {{ prysm_beacon_custom_cmdline_args }}
-  when: prysm_beacon_custom_cmdline_args != ""
+    prysm_beacon_internal_cmdline_args: >
+      {{prysm_beacon_internal_cmdline_args}}
+      {{ prysm_beacon_cmdline_args | join(' ') }}
+  when: prysm_beacon_cmdline_args != []
 
 - name: Sanitize beacon cmdline_args
   set_fact:
-    prysm_beacon_cmdline_args: "{{prysm_beacon_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+    prysm_beacon_internal_cmdline_args: "{{prysm_beacon_internal_cmdline_args | replace('\n', '') | replace('\"', '')}}"
 
 - name: Show beacon cmdline_args
   debug:
-    msg: "{{prysm_beacon_cmdline_args}}"
+    msg: "{{prysm_beacon_internal_cmdline_args}}"
 
 - name: Create prysm-beacon systemd service
   template:
