@@ -28,10 +28,10 @@ prysm_version_info_file: "{{ prysm_config_dir }}/clc_version"
 
 prysm_beacon_enabled: True
 prysm_validator_enabled: False
-# do not override prysm_beacon_internal_cmdline_args or prysm_validator_internal_cmdline_args 
+# do not override _prysm_beacon_internal_cmdline_args or _prysm_validator_internal_cmdline_args 
 # these two are strings
-prysm_beacon_internal_cmdline_args: ""
-prysm_validator_internal_cmdline_args: ""
+_prysm_beacon_internal_cmdline_args: ""
+_prysm_validator_internal_cmdline_args: ""
 # use these to pass in cmdline_args not present in the above
 # these two are lists
 prysm_beacon_cmdline_args: []

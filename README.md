@@ -45,10 +45,10 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `prysm_keystores_dir`  | "/config/keys"                          |  The keys directory for validators                                                                        |
 | `prysm_beacon_enabled`    | True                                 |  Default run the beacon node                                                                              |
 | `prysm_validator_enabled` | False                                | Whether to run in validator mode - please note that the secrets and keys need to be copied by you         |
-| `prysm_beacon_cmdline_args`        | []                          |  List of cli args to append to the internal prysm_beacon_internal_cmdline_args                                  |
-| `prysm_validator_cmdline_args`    | []                           |  List of cli args to append to the internal prysm_validator_internal_cmdline_args                               |
+| `prysm_beacon_cmdline_args`        | []                          |  List of cli args to append to the internal _prysm_beacon_internal_cmdline_args                                  |
+| `prysm_validator_cmdline_args`    | []                           |  List of cli args to append to the internal _prysm_validator_internal_cmdline_args                               |
 
-> :warning: **Please do not override prysm_beacon_internal_cmdline_args and prysm_validator_internal_cmdline_args**: Be very careful here! Only use `prysm_beacon_cmdline_args` and `prysm_validator_cmdline_args` which append to the respective args
+> :warning: **Please do not override _prysm_beacon_internal_cmdline_args and _prysm_validator_internal_cmdline_args**: Be very careful here! Only use `prysm_beacon_cmdline_args` and `prysm_validator_cmdline_args` which append to the respective args
 
 
 ### Keys/Secrets
