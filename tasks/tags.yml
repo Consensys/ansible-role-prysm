@@ -1,8 +1,18 @@
 - name: Set the version on a local file so it can be used by other automation
-  copy: 
+  ansible.builtin.copy:
     content: "{{ _prysm_version }}"
     dest: "{{ prysm_version_info_file }}"
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    mode: 0644    
-  become: true    
+    mode: 0644
+  become: true
+
+- name: tags | Set the version for the validator so it can be used by other automation
+  ansible.builtin.copy:
+    content: "{{ _prysm_version }}"
+    dest: "{{ prysm_validator_version_info_file }}"
+    owner: "{{ prysm_user }}"
+    group: "{{ prysm_group }}"
+    mode: 0644
+  become: true
+  when: prysm_validator_enabled
