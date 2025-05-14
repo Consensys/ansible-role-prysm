@@ -25,6 +25,7 @@ prysm_keys_dir: "{{prysm_config_dir}}/keys"
 prysm_wallet_dir: "{{prysm_config_dir}}/wallet"
 prysm_wallet_password_file: ""
 prysm_version_info_file: "{{ prysm_config_dir }}/clc_version"
+prysm_validator_version_info_file: "{{ prysm_config_dir }}/clc_validator_version"
 
 prysm_beacon_enabled: True
 prysm_validator_enabled: False
