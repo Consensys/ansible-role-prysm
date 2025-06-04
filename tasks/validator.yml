@@ -4,6 +4,12 @@
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       --{{prysm_network}}
+  when: prysm_network != ""
+
+- name: Add basics to the validator cmdline_args
+  set_fact:
+    _prysm_validator_internal_cmdline_args: >
+      {{_prysm_validator_internal_cmdline_args}}
       --datadir={{prysm_validator_data_dir}}
       --wallet-dir={{ prysm_wallet_dir }}
       --wallet-password-file={{ prysm_wallet_password_file }}
