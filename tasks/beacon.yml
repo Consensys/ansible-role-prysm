@@ -119,6 +119,6 @@
   ansible.builtin.systemd:
     name: prysm-beacon
     state: "{{ prysm_systemd_state }}"
-    enabled: true
+    enabled: "{{ (prysm_systemd_state!='stopped') | ternary('true', 'false') | bool }}"
   become: true
   when: prysm_state_updates_beacon|length > 0
