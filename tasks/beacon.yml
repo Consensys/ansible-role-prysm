@@ -4,6 +4,12 @@
     _prysm_beacon_internal_cmdline_args: >
       {{_prysm_beacon_internal_cmdline_args}}
       --{{prysm_network}}
+  when: prysm_network != ""
+
+- name: Add basics to the beacon cmdline_args
+  set_fact:
+    _prysm_beacon_internal_cmdline_args: >
+      {{_prysm_beacon_internal_cmdline_args}}
       --datadir={{prysm_data_dir}}
       --verbosity={{prysm_log_level}}
       --log-file={{prysm_log_dir}}/beacon.log
@@ -62,7 +68,17 @@
     _prysm_beacon_internal_cmdline_args: >
       {{_prysm_beacon_internal_cmdline_args}}
       --genesis-state={{prysm_genesis_state}}
+      --chain-config-file={{prysm_chain_config_file}}
   when: prysm_genesis_state is defined and prysm_genesis_state != ""
+
+- name: Add bootnodes if defined
+  set_fact:
+    _prysm_beacon_internal_cmdline_args: >
+      {{_prysm_beacon_internal_cmdline_args}}
+      {% for item in prysm_bootnodes %}
+      --bootstrap-node={{ item }}
+      {% endfor %}      
+  when: prysm_bootnodes is defined and prysm_bootnodes|length > 0
 
 - name: Add custom cli args if provided
   ansible.builtin.set_fact:

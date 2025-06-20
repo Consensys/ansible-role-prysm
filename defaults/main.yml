@@ -26,6 +26,9 @@ prysm_wallet_dir: "{{prysm_config_dir}}/wallet"
 prysm_wallet_password_file: ""
 prysm_version_info_file: "{{ prysm_config_dir }}/clc_version"
 prysm_validator_version_info_file: "{{ prysm_config_dir }}/clc_validator_version"
+prysm_bootnodes: []
+prysm_genesis_state: ""
+prysm_chain_config_file: ""
 
 prysm_beacon_enabled: True
 prysm_validator_enabled: False
@@ -49,7 +52,7 @@ prysm_state_updates_validator: []
 prysm_state_updates_beacon: []
 
 # prysm config
-prysm_network: mainnet
+prysm_network: ""
 prysm_local_ip: "0.0.0.0"
 prysm_host_ip: ""
 prysm_log_level: info
