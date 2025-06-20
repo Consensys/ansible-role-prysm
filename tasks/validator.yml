@@ -1,6 +1,6 @@
 ---
 - name: Add basics to the validator cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       --{{prysm_network}}
@@ -23,37 +23,37 @@
       --enable-doppelganger
 
 - name: Add metrics to the validator cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       --monitoring-host='{{ prysm_metrics_interface}}'
       --monitoring-port={{ prysm_validator_metrics_port}}
-  when: prysm_metrics_enabled|bool == True
+  when: prysm_metrics_enabled|bool
 
 - name: Add graffiti to the validator cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       --graffiti='{{prysm_graffiti}}'
   when: prysm_graffiti != ""
 
 - name: Add custom cli args if provided
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       {{ prysm_validator_cmdline_args | join(' ') }}
   when: prysm_validator_cmdline_args != []
 
 - name: Sanitize validator cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: "{{_prysm_validator_internal_cmdline_args | replace('\n', '') | replace('\"', '')}}"
 
 - name: Show validator cmdline_args
-  debug:
+  ansible.builtin.debug:
     msg: "{{_prysm_validator_internal_cmdline_args}}"
 
 - name: Create prysm-validator systemd service
-  template:
+  ansible.builtin.template:
     src: "prysm-validator.service.j2"
     dest: "{{ prysm_systemd_dir }}/prysm-validator.service"
     owner: "root"
@@ -62,20 +62,20 @@
   register: validator_systemd_file
 
 - name: Set updated optionally to trigger a systemd restart at the end
-  set_fact:
+  ansible.builtin.set_fact:
     prysm_state_updates_validator: "{{ prysm_state_updates_validator + ['prysm.validator_systemd_file'] }}"
   when: validator_systemd_file is changed
 
 - name: Reload systemd to reread configs
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: yes
   become: true
   when: validator_systemd_file is changed
 
 - name: Enable and start prysm-validator service
-  systemd:
+  ansible.builtin.systemd:
     name: prysm-validator
     state: "{{ prysm_systemd_state }}"
     enabled: true
   become: true
-  when: prysm_state_updates_validator|length > 0 
+  when: prysm_state_updates_validator|length > 0
