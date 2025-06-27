@@ -5,6 +5,14 @@
         msg: You must set "prysm_version" for this role to run
       when: prysm_version is not defined
 
+- name: Fetch architecture of the host
+  debug:
+    var: ansible_facts.architecture
+
+- name: Set system architecture to download appropriate binary
+  set_fact:
+    prysm_architecture: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+
 # Retrive latest version when prysm_version == 'latest'
 - name: Include task to retrieve latest version
   ansible.builtin.include_tasks: "latest.yml"
