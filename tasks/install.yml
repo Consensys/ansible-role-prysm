@@ -18,6 +18,7 @@
     state: directory
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
+    recurse: true    
   loop:
     - "{{ prysm_base_dir }}"
     - "{{ prysm_install_dir }}"
