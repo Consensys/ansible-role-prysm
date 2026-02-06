@@ -1,9 +1,11 @@
 ---
 # User and group
 prysm_user: prysm
+prysm_uid: 1523
+prysm_gid: 1523
+
 prysm_group: "{{ prysm_user }}"
 prysm_architecture: "amd64"
-
 # Internal variable for version. This can be overriden when it discover the latest version
 # Parameters specify via command line cannot be overriden using set_fact
 _prysm_version: "{{ prysm_version }}"
