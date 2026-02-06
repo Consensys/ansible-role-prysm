@@ -6,38 +6,42 @@
   register: prysm_user_entry
   failed_when: false
 
-- name: Extract current UID (only if user exists)
+- name: install | Determine if prysm user exists
   set_fact:
-    prysm_current_uid: "{{ prysm_user_entry.ansible_facts.getent_passwd[prysm_user][1] | int }}"
-  when: not prysm_user_entry.failed
+    prysm_user_exists: "{{ prysm_user in (prysm_user_entry.ansible_facts.getent_passwd | default({})) }}"
 
-- name: Determine if UID update is needed
-  set_fact:
-    prysm_uid_needs_update: "{{ prysm_current_uid != prysm_uid }}"
-  when: not prysm_user_entry.failed
+- block:
 
-- name: Stop enabled prysm services if UID needs update
-  service:
-    name: "{{ item.name }}"
-    state: stopped
-  loop:
-    - name: prysm-beacon
-      enabled: "{{ prysm_beacon_enabled }}"
-    - name: prysm-validator
-      enabled: "{{ prysm_validator_enabled }}"
-  when:
-    - item.enabled
-    - not prysm_user_entry.failed
-    - prysm_uid_needs_update
-  become: true
+  - name: Extract current UID (only if user exists)
+    set_fact:
+      prysm_current_uid: "{{ prysm_user_entry.ansible_facts.getent_passwd[prysm_user][1] | int }}"
 
-- name: Set updated optionally to trigger a systemd restart at the end
-  set_fact:
-    prysm_state_updates_beacon: "{{ prysm_state_updates_beacon + (['prysm.uid'] if prysm_beacon_enabled else []) }}"
-    prysm_state_updates_validator: "{{ prysm_state_updates_validator + (['prysm.uid'] if prysm_validator_enabled else []) }}"
-  when:
-    - not prysm_user_entry.failed
-    - prysm_uid_needs_update
+  - name: Determine if UID update is needed
+    set_fact:
+      prysm_uid_needs_update: "{{ prysm_current_uid != prysm_uid }}"
+
+  - name: Stop enabled prysm services if UID needs update
+    service:
+      name: "{{ item.name }}"
+      state: stopped
+    loop:
+      - name: prysm-beacon
+        enabled: "{{ prysm_beacon_enabled }}"
+      - name: prysm-validator
+        enabled: "{{ prysm_validator_enabled }}"
+    when:
+      - item.enabled
+      - prysm_uid_needs_update
+    become: true
+
+  - name: Set updated optionally to trigger a systemd restart at the end
+    set_fact:
+      prysm_state_updates_beacon: "{{ prysm_state_updates_beacon + (['prysm.uid'] if prysm_beacon_enabled else []) }}"
+      prysm_state_updates_validator: "{{ prysm_state_updates_validator + (['prysm.uid'] if prysm_validator_enabled else []) }}"
+    when:
+      - prysm_uid_needs_update
+
+  when: prysm_user_exists
 
 - name: Ensure prysm group exists
   ansible.builtin.group:
