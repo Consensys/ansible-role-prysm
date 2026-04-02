@@ -59,7 +59,7 @@ prysm_local_ip: "0.0.0.0"
 prysm_host_ip: ""
 prysm_log_level: info
 prysm_execution_urls: "http://127.0.0.1:8551"
-prysm_checkpoint_sync_url: "https://beaconstate-{{prysm_network}}.chainsafe.io"
+prysm_checkpoint_sync_url: "{{ 'https://sync-mainnet.beaconcha.in' if prysm_network == 'mainnet' else 'https://checkpoint-sync.' + prysm_network + '.ethpandaops.io' }}"
 prysm_default_fee_recipient: ""
 
 #p2p
