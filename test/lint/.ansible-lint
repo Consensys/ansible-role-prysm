@@ -1,8 +1,7 @@
+---
+profile: production
 exclude_paths: []
-parseable: true
-use_default_rules: true
-verbosity: true
+verbosity: 1
 skip_list:
-  - '204'
-  - '206'
-  - '602'
+  - yaml[line-length]
+  - command-instead-of-shell

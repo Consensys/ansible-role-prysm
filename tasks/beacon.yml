@@ -7,7 +7,7 @@
   when: prysm_network != ""
 
 - name: Add basics to the beacon cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_beacon_internal_cmdline_args: >
       {{_prysm_beacon_internal_cmdline_args}}
       --datadir={{prysm_data_dir}}
@@ -72,7 +72,7 @@
   when: prysm_genesis_state is defined and prysm_genesis_state != ""
 
 - name: Add bootnodes if defined
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_beacon_internal_cmdline_args: >
       {{_prysm_beacon_internal_cmdline_args}}
       {% for item in prysm_bootnodes %}
@@ -101,6 +101,7 @@
     dest: "{{ prysm_systemd_dir }}/prysm-beacon.service"
     owner: "root"
     group: "root"
+    mode: '0644'
   become: true
   register: beacon_systemd_file
 
@@ -111,7 +112,7 @@
 
 - name: Reload systemd to reread configs
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   become: true
   when: beacon_systemd_file is changed
 

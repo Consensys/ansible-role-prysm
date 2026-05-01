@@ -7,7 +7,7 @@
   when: prysm_network != ""
 
 - name: Add basics to the validator cmdline_args
-  set_fact:
+  ansible.builtin.set_fact:
     _prysm_validator_internal_cmdline_args: >
       {{_prysm_validator_internal_cmdline_args}}
       --datadir={{prysm_validator_data_dir}}
@@ -58,6 +58,7 @@
     dest: "{{ prysm_systemd_dir }}/prysm-validator.service"
     owner: "root"
     group: "root"
+    mode: '0644'
   become: true
   register: validator_systemd_file
 
@@ -68,7 +69,7 @@
 
 - name: Reload systemd to reread configs
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   become: true
   when: validator_systemd_file is changed
 

@@ -4,7 +4,7 @@
     dest: "{{ prysm_version_info_file }}"
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    mode: 0644
+    mode: '0644'
   become: true
 
 - name: tags | Set the version for the validator so it can be used by other automation
@@ -13,6 +13,6 @@
     dest: "{{ prysm_validator_version_info_file }}"
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    mode: 0644
+    mode: '0644'
   become: true
   when: prysm_validator_enabled

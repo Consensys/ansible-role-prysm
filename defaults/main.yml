@@ -32,8 +32,8 @@ prysm_bootnodes: []
 prysm_genesis_state: ""
 prysm_chain_config_file: ""
 
-prysm_beacon_enabled: True
-prysm_validator_enabled: False
+prysm_beacon_enabled: true
+prysm_validator_enabled: false
 # do not override _prysm_beacon_internal_cmdline_args or _prysm_validator_internal_cmdline_args 
 # these two are strings
 _prysm_beacon_internal_cmdline_args: ""
@@ -63,18 +63,18 @@ prysm_checkpoint_sync_url: "{{ 'https://sync-mainnet.beaconcha.in' if prysm_netw
 prysm_default_fee_recipient: ""
 
 #p2p
-prysm_p2p_enabled: "True"
+prysm_p2p_enabled: true
 prysm_p2p_port: 9000
 
 #metrics
-prysm_metrics_enabled: "True"
+prysm_metrics_enabled: true
 prysm_metrics_interface: 0.0.0.0
 prysm_metrics_port: 8008
 prysm_validator_metrics_port: 8009
 prysm_pprof_port: 6006
 
 # rpc
-prysm_rpc_enabled: "True"
+prysm_rpc_enabled: true
 prysm_rpc_interface: "127.0.0.1"
 prysm_rpc_port: 5051
 prysm_grpc_port: 5052
