@@ -12,7 +12,7 @@
       {{_prysm_beacon_internal_cmdline_args}}
       --datadir={{prysm_data_dir}}
       --verbosity={{prysm_log_level}}
-      --log-file={{prysm_log_dir}}/beacon.log
+      --disable-ephemeral-log-file=true
       --log-format=json
       --jwt-secret={{prysm_jwt_auth_file}}
       --execution-endpoint={{prysm_execution_urls}}

@@ -16,7 +16,6 @@
       --beacon-rpc-provider={{ prysm_validator_beacon_interface }}
       --suggested-fee-recipient={{prysm_default_fee_recipient}}
       --verbosity={{prysm_log_level}}
-      --log-file={{prysm_log_dir}}/validator.log
       --log-format=json
       --enable-builder
       --accept-terms-of-use
