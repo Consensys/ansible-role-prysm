@@ -11,6 +11,7 @@
     prysm_user_exists: "{{ prysm_user in (prysm_user_entry.ansible_facts.getent_passwd | default({})) }}"
 
 - name: Manage prysm user UID if user already exists
+  when: prysm_user_exists
   block:
     - name: Extract current UID (only if user exists)
       ansible.builtin.set_fact:
@@ -41,18 +42,16 @@
       when:
         - prysm_uid_needs_update
 
-  when: prysm_user_exists
-
 - name: Ensure prysm group exists
   ansible.builtin.group:
     name: "{{ prysm_group }}"
-    gid: "{{ prysm_gid }}"    
+    gid: "{{ prysm_gid }}"
     state: present
   become: true
 
 - name: Create prysm user
   ansible.builtin.user:
-    comment:  prysm client user
+    comment: prysm client user
     name: "{{ prysm_user }}"
     uid: "{{ prysm_uid }}"
     group: "{{ prysm_group }}"
@@ -64,7 +63,7 @@
     state: directory
     owner: "{{ prysm_user }}"
     group: "{{ prysm_group }}"
-    recurse: true    
+    recurse: true
   loop:
     - "{{ prysm_base_dir }}"
     - "{{ prysm_install_dir }}"

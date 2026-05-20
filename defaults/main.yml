@@ -34,7 +34,7 @@ prysm_chain_config_file: ""
 
 prysm_beacon_enabled: true
 prysm_validator_enabled: false
-# do not override _prysm_beacon_internal_cmdline_args or _prysm_validator_internal_cmdline_args 
+# do not override _prysm_beacon_internal_cmdline_args or _prysm_validator_internal_cmdline_args
 # these two are strings
 _prysm_beacon_internal_cmdline_args: ""
 _prysm_validator_internal_cmdline_args: ""
@@ -62,11 +62,11 @@ prysm_execution_urls: "http://127.0.0.1:8551"
 prysm_checkpoint_sync_url: "{{ 'https://sync-mainnet.beaconcha.in' if prysm_network == 'mainnet' else 'https://checkpoint-sync.' + prysm_network + '.ethpandaops.io' }}"
 prysm_default_fee_recipient: ""
 
-#p2p
+# p2p
 prysm_p2p_enabled: true
 prysm_p2p_port: 9000
 
-#metrics
+# metrics
 prysm_metrics_enabled: true
 prysm_metrics_interface: 0.0.0.0
 prysm_metrics_port: 8008

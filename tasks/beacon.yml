@@ -77,7 +77,7 @@
       {{_prysm_beacon_internal_cmdline_args}}
       {% for item in prysm_bootnodes %}
       --bootstrap-node={{ item }}
-      {% endfor %}      
+      {% endfor %}
   when: prysm_bootnodes is defined and prysm_bootnodes|length > 0
 
 - name: Add custom cli args if provided
